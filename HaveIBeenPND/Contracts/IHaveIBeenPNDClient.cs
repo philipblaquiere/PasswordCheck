@@ -11,6 +11,6 @@ namespace HaveIBeenPND.Contracts
 		/// </summary>
 		/// <param name="prefix">First 5 characters of SHA-1 Password</param>
 		/// <returns>A list of suffix along with their pwn count</returns>
-		Task<IEnumerable<PNDPassword>> Range(string prefix);
+		Task<HaveIBeenPwndRangeResponse> Range(string prefix);
 	}
 }

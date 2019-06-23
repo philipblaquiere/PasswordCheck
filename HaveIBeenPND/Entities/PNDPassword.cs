@@ -18,6 +18,6 @@
 
 		public string SHA1Password => SHA1Prefix + SHA1Suffix;
 
-		public int PNDCount { get; }
+		public int? PNDCount { get; }
 	}
 }

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using HaveIBeenPND.Contracts;
 using HaveIBeenPND.Entities;
 using Flurl;
@@ -18,16 +16,13 @@ namespace HaveIBeenPND
 			.WithHeader("Accept", "text/plain")
 			.AppendPathSegment("range");
 
-		public async Task<IEnumerable<PNDPassword>> Range(string prefix)
+		public async Task<HaveIBeenPwndRangeResponse> Range(string prefix)
 		{
-			var responseText = await RangeEndpoint
+			string response = await RangeEndpoint
 				.AppendPathSegment(prefix)
 				.GetStringAsync();
 
-			return responseText
-				.Split("\r\n")
-				.Select(prefexCountEntry => prefexCountEntry.Split(':'))
-				.Select(prefixCount => new PNDPassword(prefix, prefixCount[0], int.Parse(prefixCount[1])));
+			return new HaveIBeenPwndRangeResponse(response);
 		}
 	}
 }

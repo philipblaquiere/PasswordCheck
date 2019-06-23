@@ -2,7 +2,7 @@
   "profiles": {
 	"PasswordCheck": {
 		"commandName": "Project",
-		"commandLineArgs": "check -p Testing1234 -r CustomRuleSet1"
+		"commandLineArgs": "check -p Testing1234 -h"
 	}
   }
 }

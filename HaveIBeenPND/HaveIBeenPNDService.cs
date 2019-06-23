@@ -2,15 +2,16 @@
 using System.Threading.Tasks;
 using HaveIBeenPND.Contracts;
 using HaveIBeenPND.Entities;
+using HaveIBeenPND.Entities.Extensions;
 using HaveIBeenPND.Helpers;
 
 namespace HaveIBeenPND
 {
 	public class HaveIBeenPNDService : IHaveIBeenPNDService
 	{
-		public HaveIBeenPNDService()
+		public HaveIBeenPNDService(IHaveIBeenPNDClient client = null)
 		{
-			HaveIBeenPNDClient = new HaveIBeenPNDClient();
+			HaveIBeenPNDClient = client ?? new HaveIBeenPNDClient();
 		}
 
 		internal IHaveIBeenPNDClient HaveIBeenPNDClient { get; }
@@ -24,9 +25,13 @@ namespace HaveIBeenPND
 
 			var hashedPassword = HashHelper.SHA1Hash(password);
 
-			var passwords = await HaveIBeenPNDClient.Range(hashedPassword.Substring(0,5));
+			string prefix = hashedPassword.Substring(0, 5);
 
-			return passwords.FirstOrDefault(pndPassword => pndPassword.SHA1Password == hashedPassword);
+			var response = await HaveIBeenPNDClient.Range(prefix);
+
+			return response
+				.GetPNDPasswords(prefix)
+				.FirstOrDefault(pndPassword => pndPassword.SHA1Password == hashedPassword);
 		}
 	}
 }
