@@ -15,7 +15,7 @@ namespace PasswordCheck.Services
         private readonly IRuleSetService ruleSetService;
         private readonly IRankingSetService rankingSetService;
         private readonly IScoreNormalizer scoreNormalizer;
-        private IHaveIBeenPNDService pndService;
+        private readonly IHaveIBeenPNDService pndService;
 
         public CheckPasswordService(
             IRuleSetService ruleSetService = null,
