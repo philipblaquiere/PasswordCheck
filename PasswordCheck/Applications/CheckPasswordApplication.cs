@@ -8,87 +8,88 @@ using PasswordCheck.Services.Data;
 
 namespace PasswordCheck.Applications
 {
-	public class CheckPasswordApplication : IApplication
-	{
-		public CheckPasswordApplication(
-			string password,
-			string ruleSet,
-			string rankingSet,
-			bool isDetailedOutput,
-			bool isCheckHaveIBeenPwned)
-		{
-			Password = password;
-			RuleSetName = ruleSet;
-			RankingSetName = rankingSet;
-			IsDetailedOutput = isDetailedOutput;
-			IsCheckHaveIBeenPwned = isCheckHaveIBeenPwned;
-		}
+    public class CheckPasswordApplication : IApplication
+    {
+        public CheckPasswordApplication(
+            string password,
+            string ruleSet,
+            string rankingSet,
+            bool isDetailedOutput,
+            bool isCheckHaveIBeenPwned)
+        {
+            Password = password;
+            RuleSetName = ruleSet;
+            RankingSetName = rankingSet;
+            IsDetailedOutput = isDetailedOutput;
+            IsCheckHaveIBeenPwned = isCheckHaveIBeenPwned;
+        }
 
-		public string Password { get; }
+        public string Password { get; }
 
-		public string RuleSetName { get; }
+        public string RuleSetName { get; }
 
-		public string RankingSetName { get; }
+        public string RankingSetName { get; }
 
-		public bool IsDetailedOutput { get; }
+        public bool IsDetailedOutput { get; }
 
-		public bool IsCheckHaveIBeenPwned { get; }
+        public bool IsCheckHaveIBeenPwned { get; }
 
-		public async Task Run()
-		{
-			StringBuilder sb = new StringBuilder();
+        public async Task Run()
+        {
+            StringBuilder sb = new StringBuilder();
 
-			CheckPasswordService checkPasswordService = new CheckPasswordService();
+            CheckPasswordService checkPasswordService = new CheckPasswordService();
 
-			CheckPasswordResult result = await checkPasswordService.Check(
-				Password, 
-				RuleSetName, 
-				RankingSetName, 
-				IsCheckHaveIBeenPwned);
+            CheckPasswordResult result = await checkPasswordService.Check(
+                Password,
+                RuleSetName,
+                RankingSetName,
+                IsCheckHaveIBeenPwned);
 
-			sb.AppendLine("PASSWORD CHECK: " + (result.IsSuccess ? "PASSED" : "FAILED"));
-			sb.AppendLine($"STRENGTH: {result.Ranking} ({result.Score})");
+            sb.AppendLine("PASSWORD CHECK: " + (result.IsSuccess ? "PASSED" : "FAILED"));
+            sb.AppendLine($"STRENGTH: {result.Ranking} ({result.Score})");
 
-			if (IsDetailedOutput)
-			{
-				sb.AppendLine($"RULE SET [{result.RuleSet.Name}]");
+            if (IsDetailedOutput)
+            {
+                sb.AppendLine($"RULE SET [{result.RuleSet.Name}]");
+                sb.AppendLine($"RANKING SET [{result.RankingSet.Name}]");
 
-				if (result.RulesPassed?.Any() ?? false)
-				{
-					sb.AppendLine($"PASSED:");
-					sb.AppendJoin("\n", result.RulesPassed?.Select(rule => rule.Message));
-					sb.AppendLine();
-				}
+                if (result.RulesPassed?.Any() ?? false)
+                {
+                    sb.AppendLine($"PASSED:");
+                    sb.AppendJoin("\n", result.RulesPassed?.Select(rule => rule.Message));
+                    sb.AppendLine();
+                }
 
-				if (!result.IsSuccess)
-				{
-					sb.AppendLine("FAILED:");
-					sb.AppendJoin("\n", result.RulesFailed?.Select(rule => rule.Message));
-					sb.AppendLine();
-				}
+                if (!result.IsSuccess)
+                {
+                    sb.AppendLine("FAILED:");
+                    sb.AppendJoin("\n", result.RulesFailed?.Select(rule => rule.Message));
+                    sb.AppendLine();
+                }
 
-				if (result.RulesRecommendations?.Any() ?? false)
-				{
-					sb.AppendLine("RECOMMENDATIONS:");
-					sb.AppendJoin("\n", result.RulesRecommendations.Select(rule => rule.Message));
-					sb.AppendLine();
-				}
-			}
+                if (result.RulesRecommendations?.Any() ?? false)
+                {
+                    sb.AppendLine("RECOMMENDATIONS:");
+                    sb.AppendJoin("\n", result.RulesRecommendations.Select(rule => rule.Message));
+                    sb.AppendLine();
+                }
+            }
 
-			if (IsCheckHaveIBeenPwned)
-			{
-				if (result.PNDPassword!= null)
-				{
-					sb.AppendLine($"Your password is PWNED ({result.PNDPassword.PNDCount} times), consider changing it!");
-				}
-				else
-				{
-					sb.AppendLine($"Your password hasn't been PWNED...yet.");
-				}
-			}
+            if (IsCheckHaveIBeenPwned)
+            {
+                if (result.PNDPassword != null)
+                {
+                    sb.AppendLine($"Your password is PWNED ({result.PNDPassword.PNDCount} times), consider changing it!");
+                }
+                else
+                {
+                    sb.AppendLine($"Your password hasn't been PWNED...yet.");
+                }
+            }
 
-			// Empty string builder to console
-			Console.Write(sb);
-		}
-	}
+            // Empty string builder to console
+            Console.Write(sb);
+        }
+    }
 }

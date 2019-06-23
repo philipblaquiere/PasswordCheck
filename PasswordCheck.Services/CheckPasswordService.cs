@@ -61,7 +61,7 @@ namespace PasswordCheck.Services
             return new CheckPasswordResult(
                 score: interpretedRanking?.Key,
                 ranking: interpretedRanking?.Value,
-                rankingSetName: rankingSet?.Name,
+                rankingSet: rankingSet,
                 ruleSet: ruleSet,
                 isSuccess: ruleSetTestResults.IsSuccess,
                 pndPassword: pndPassword,
