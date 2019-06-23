@@ -17,17 +17,10 @@ namespace PasswordCheck
 				.MapResult(
 				(CheckPasswordOptions options) => 
 				{
-
-					// Get rule set to be tested upon
-					RuleSet ruleSet = RuleSetProvider.GetRuleSet(options.RuleSetName);
-
-					// Get ranking to be interpreted upon
-					RankingSet rankingSet = RankingsProvider.GetRanking(options.RankingName);
-
 					application = new CheckPasswordApplication(
 						options.Password,
-						ruleSet,
-						rankingSet,
+						options.RuleSetName,
+						options.RankingName,
 						options.IsDetailedOutput,
 						options.IsHaveIBeenPWND);
 

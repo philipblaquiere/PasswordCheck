@@ -4,7 +4,7 @@ using PasswordCheck.Data;
 
 namespace PasswordCheck
 {
-	public static class RankingsProvider
+	public static class RankingSetProvider
 	{
 		public static RankingSet GetRanking(string rankingName = "")
 		{

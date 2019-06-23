@@ -3,6 +3,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PasswordCheck.Contracts;
+using PasswordCheck.Data;
+using PasswordCheck.Services;
+using PasswordCheck.Services.Contracts;
 
 namespace PasswordCheck.Applications
 {
@@ -19,35 +22,33 @@ namespace PasswordCheck.Applications
 		public bool ListRankings { get; }
 		public string RankingNameDetails { get; }
 
-		public Task Run()
+		public async Task Run()
 		{
-			return Task.Run(() =>
+			StringBuilder sb = new StringBuilder();
+			IRankingSetService rankingSetService = new RankingSetService();
+
+			if (ListRankings || string.IsNullOrEmpty(RankingNameDetails))
 			{
-				var sb = new StringBuilder();
+				// List all rankings
+				string[] rankingSetNames = await rankingSetService.GetRankingSets();
+				sb.AppendJoin("\n", rankingSetNames);
 
-				if (ListRankings || string.IsNullOrEmpty(RankingNameDetails))
-				{
-					// List all rule sets, quite simply
-					sb.AppendJoin("\n", RankingsProvider
-						.Rankings
-						.Select(ranking => $"{ranking.Name}"));
+				sb.AppendLine();
+			}
 
-					sb.AppendLine();
-				}
+			if (!string.IsNullOrEmpty(RankingNameDetails))
+			{
+				RankingSet rankingSet = await rankingSetService.GetRankingSet(RankingNameDetails);
 
-				if (!string.IsNullOrEmpty(RankingNameDetails) && RankingsProvider.ContainsRanking(RankingNameDetails))
-				{
-					sb.AppendJoin("\n", RankingsProvider
-						.GetRanking(RankingNameDetails)
-						.Rankings
-						.Select(ranking => $"{ranking.Key} => {ranking.Value}"));
+				sb.AppendJoin("\n", rankingSet
+					.Rankings
+					.Select(ranking => $"{ranking.Key} => {ranking.Value}"));
 
-					sb.AppendLine();
-				}
+				sb.AppendLine();
+			}
 
-				// Empty string builder to console
-				Console.Write(sb);
-			});
+			// Empty string builder to console
+			Console.Write(sb);
 		}
 	}
 }

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HaveIBeenPND;
-using HaveIBeenPND.Entities;
 using PasswordCheck.Contracts;
-using PasswordCheck.Data;
+using PasswordCheck.Services;
+using PasswordCheck.Services.Data;
 
 namespace PasswordCheck.Applications
 {
@@ -14,23 +12,23 @@ namespace PasswordCheck.Applications
 	{
 		public CheckPasswordApplication(
 			string password,
-			RuleSet ruleSet,
-			RankingSet rankingSet,
+			string ruleSet,
+			string rankingSet,
 			bool isDetailedOutput,
 			bool isCheckHaveIBeenPwned)
 		{
 			Password = password;
-			RuleSet = ruleSet;
-			RankingSet = rankingSet;
+			RuleSetName = ruleSet;
+			RankingSetName = rankingSet;
 			IsDetailedOutput = isDetailedOutput;
 			IsCheckHaveIBeenPwned = isCheckHaveIBeenPwned;
 		}
 
 		public string Password { get; }
 
-		public RuleSet RuleSet { get; }
+		public string RuleSetName { get; }
 
-		public RankingSet RankingSet { get; }
+		public string RankingSetName { get; }
 
 		public bool IsDetailedOutput { get; }
 
@@ -40,66 +38,48 @@ namespace PasswordCheck.Applications
 		{
 			StringBuilder sb = new StringBuilder();
 
-			if (RuleSet == null || RankingSet == null)
-			{
-				sb.Append($"Missing {nameof(RuleSet)} or {nameof(RankingSet)}");
-				Console.WriteLine(sb);
-				return;
-			}
+			CheckPasswordService checkPasswordService = new CheckPasswordService();
 
-			// Test Password
-			RuleSetTestResult ruleSetTestResults = RuleSet.Test(Password);
+			CheckPasswordResult result = await checkPasswordService.Check(
+				Password, 
+				RuleSetName, 
+				RankingSetName, 
+				IsCheckHaveIBeenPwned);
 
-			ScoreNormalizer scoreInterpreter = new ScoreNormalizer();
-
-			// Normalize Score
-			int normalizedScore = scoreInterpreter.Normalize(
-				ruleSetTestResults.IsSuccess ? ruleSetTestResults : null,
-				RuleSet,
-				RankingSet);
-
-			// Interpret
-			KeyValuePair<int, string> interpretedRanking = RankingSet.GetClosestRanking(normalizedScore);
-
-			sb.AppendLine("PASSWORD CHECK: " + (ruleSetTestResults.IsSuccess ? "PASSED" : "FAILED"));
-			sb.AppendLine($"STRENGTH: {interpretedRanking.Value} ({ruleSetTestResults.Score})");
+			sb.AppendLine("PASSWORD CHECK: " + (result.IsSuccess ? "PASSED" : "FAILED"));
+			sb.AppendLine($"STRENGTH: {result.Ranking} ({result.Score})");
 
 			if (IsDetailedOutput)
 			{
-				sb.AppendLine($"RULE SET [{RuleSet.Name}]");
+				sb.AppendLine($"RULE SET [{result.RuleSet.Name}]");
 
-				if (ruleSetTestResults.RulesPassed?.Any() ?? false)
+				if (result.RulesPassed?.Any() ?? false)
 				{
 					sb.AppendLine($"PASSED:");
-					sb.AppendJoin("\n", ruleSetTestResults.RulesPassed?.Select(rule => rule.Message));
+					sb.AppendJoin("\n", result.RulesPassed?.Select(rule => rule.Message));
 					sb.AppendLine();
 				}
 
-				if (!ruleSetTestResults.IsSuccess)
+				if (!result.IsSuccess)
 				{
 					sb.AppendLine("FAILED:");
-					sb.AppendJoin("\n", ruleSetTestResults.RulesFailed?.Select(rule => rule.Message));
+					sb.AppendJoin("\n", result.RulesFailed?.Select(rule => rule.Message));
 					sb.AppendLine();
 				}
 
-				if (ruleSetTestResults.RulesRecommendations?.Any() ?? false)
+				if (result.RulesRecommendations?.Any() ?? false)
 				{
 					sb.AppendLine("RECOMMENDATIONS:");
-					sb.AppendJoin("\n", ruleSetTestResults.RulesRecommendations.Select(rule => rule.Message));
+					sb.AppendJoin("\n", result.RulesRecommendations.Select(rule => rule.Message));
 					sb.AppendLine();
 				}
 			}
 
 			if (IsCheckHaveIBeenPwned)
 			{
-				// Check if pass has been pwned on the external website
-				HaveIBeenPNDService pndService = new HaveIBeenPNDService();
-
-				PNDPassword pndPassword = await pndService.HaveIBeenPND(Password);
-
-				if (pndPassword != null)
+				if (result.PNDPassword!= null)
 				{
-					sb.AppendLine($"Your password is PWNED ({pndPassword.PNDCount} times), consider changing it!");
+					sb.AppendLine($"Your password is PWNED ({result.PNDPassword.PNDCount} times), consider changing it!");
 				}
 				else
 				{

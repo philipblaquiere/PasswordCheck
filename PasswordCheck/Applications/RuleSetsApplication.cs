@@ -3,13 +3,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PasswordCheck.Contracts;
+using PasswordCheck.Data;
+using PasswordCheck.Services;
+using PasswordCheck.Services.Contracts;
 
 namespace PasswordCheck.Applications
 {
 	public class RuleSetsApplication : IApplication
 	{
 		public RuleSetsApplication(
-			bool listRuleSets, 
+			bool listRuleSets,
 			string ruleSetDetails)
 		{
 			ListRuleSets = listRuleSets;
@@ -19,28 +22,29 @@ namespace PasswordCheck.Applications
 		public bool ListRuleSets { get; }
 		public string RuleSetDetails { get; }
 
-		public Task Run()
+		public async Task Run()
 		{
-			return Task.Run(() =>
+			StringBuilder sb = new StringBuilder();
+			IRuleSetService ruleSetService = new RuleSetService();
+
+			if (ListRuleSets || string.IsNullOrEmpty(RuleSetDetails))
 			{
-				var sb = new StringBuilder();
+				// List all rule sets, quite simply
+				string[] ruleSetNames = await ruleSetService.GetRuleSets();
+				sb.AppendJoin("\n", ruleSetNames);
+				sb.AppendLine();
+			}
 
-				if (ListRuleSets || string.IsNullOrEmpty(RuleSetDetails))
-				{
-					// List all rule sets, quite simply
-					sb.AppendJoin("\n", RuleSetProvider.RuleSets.Select(ruleSet => $"{ruleSet.Name}"));
-					sb.AppendLine();
-				}
+			if (!string.IsNullOrEmpty(RuleSetDetails))
+			{
+				RuleSet ruleSet = await ruleSetService.GetRuleSet(RuleSetDetails);
 
-				if(!string.IsNullOrEmpty(RuleSetDetails) && RuleSetProvider.ContainsRuleSet(RuleSetDetails))
-				{
-					sb.AppendJoin("\n", RuleSetProvider.GetRuleSet(RuleSetDetails).Rules.Select(rule => rule.Name));
-					sb.AppendLine();
-				}
+				sb.AppendJoin("\n", ruleSet.Rules.Select(rule => rule.Name));
+				sb.AppendLine();
+			}
 
-				// Empty string builder to console
-				Console.Write(sb);
-			});
+			// Empty string builder to console
+			Console.Write(sb);
 		}
 	}
 }

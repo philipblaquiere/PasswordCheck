@@ -19,6 +19,7 @@ To build PasswordCheck Console Application locally:
 ```bash
 git clone https://github.com/philipblaquiere/PasswordCheck.git
 cd PasswordCheck/PasswordCheck
+dotnet restore
 dotnet watch build
 ```
 

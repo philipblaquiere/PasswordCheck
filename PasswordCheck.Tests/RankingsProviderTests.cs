@@ -12,7 +12,7 @@ namespace PasswordCheck.Tests
 			// Arrange
 			var rankingName = "";
 			// Act
-			var containsRanking = RankingsProvider.ContainsRanking(rankingName);
+			var containsRanking = RankingSetProvider.ContainsRanking(rankingName);
 			// Assert
 			Assert.IsFalse(containsRanking);
 		}
@@ -23,7 +23,7 @@ namespace PasswordCheck.Tests
 			// Arrange
 			var rankingName = "this_ranking_is_unkown";
 			// Act
-			var containsRanking = RankingsProvider.ContainsRanking(rankingName);
+			var containsRanking = RankingSetProvider.ContainsRanking(rankingName);
 			// Assert
 			Assert.IsFalse(containsRanking);
 		}
@@ -34,7 +34,7 @@ namespace PasswordCheck.Tests
 			// Arrange
 			var rankingName = "Default";
 			// Act
-			var containsRanking = RankingsProvider.ContainsRanking(rankingName);
+			var containsRanking = RankingSetProvider.ContainsRanking(rankingName);
 			// Assert
 			Assert.IsTrue(containsRanking);
 		}
@@ -45,7 +45,7 @@ namespace PasswordCheck.Tests
 			// Arrange
 			var rankingName = "Default";
 			// Act
-			var ranking = RankingsProvider.GetRanking(rankingName);
+			var ranking = RankingSetProvider.GetRanking(rankingName);
 			// Assert
 			Assert.AreEqual(rankingName, ranking.Name);
 		}
@@ -57,7 +57,7 @@ namespace PasswordCheck.Tests
 			var unknownRankingName = "this_ranking_is_unkown";
 			var defaultRankingName = "Default";
 			// Act
-			var ranking = RankingsProvider.GetRanking(unknownRankingName);
+			var ranking = RankingSetProvider.GetRanking(unknownRankingName);
 			// Assert
 			Assert.AreEqual(defaultRankingName, ranking.Name);
 		}
@@ -68,7 +68,7 @@ namespace PasswordCheck.Tests
 			// Arrange
 			var defaultRankingName = "Default";
 			// Act
-			var ranking = RankingsProvider.GetRanking("");
+			var ranking = RankingSetProvider.GetRanking("");
 			// Assert
 			Assert.AreEqual(defaultRankingName, ranking.Name);
 		}
