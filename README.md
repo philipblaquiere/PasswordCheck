@@ -104,3 +104,22 @@ The resulting `Score` is then interpreted upon the given `Ranking` set in the fo
 This method allows for a score to always be 'fitted' proportional to the `Ranking`.
 
 The fitted score is then matched to the lowest common value in the `Ranking` (eg. a fitted score of 6 would match a `Ranking` score of 4 for the given `Ranking` set `{0, 2, 4, 7}`).
+
+# Runnings Tests
+
+There are two projects dedicated to Unit Testings. Both use MSTest as their unit test framework
+
+1. `PasswordCheck.Tests.csproj`
+1. `HaveIBeenPND.Tests.csproj`
+
+To run tests, run
+
+```
+dotnet test
+```
+
+eg. In the parent directory of the project to be tested upon: 
+
+```
+~/PasswordCheck/PasswordCheck.Tests> dotnet test
+```
