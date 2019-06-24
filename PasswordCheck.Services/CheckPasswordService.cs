@@ -31,9 +31,9 @@ namespace PasswordCheck.Services
 
         public async Task<CheckPasswordResult> Check(
             string password,
-            string ruleSetName,
-            string rankingSetName,
-            bool isCheckHaveIBeenPwned)
+            string ruleSetName = null,
+            string rankingSetName = null,
+            bool isCheckHaveIBeenPwned = false)
         {
             RuleSet ruleSet = await this.ruleSetService.GetRuleSet(ruleSetName);
             RankingSet rankingSet = await this.rankingSetService.GetRankingSet(rankingSetName);
