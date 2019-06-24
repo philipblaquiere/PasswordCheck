@@ -5,7 +5,7 @@ PasswordCheck doesn't define industry-leading password strength regulations. Qui
 
 # At a glance:
 
-- Compatible with __.NET Core__, __C# 7.1+__
+- Compatible with __.NET Core__ (SDK version 2.2.x ), __C# 7.1+__
 - Facilitates defining new rules to test upon
 - Verify if password has been pnd on [haveibeenpned.com](https://haveibeenpned.com/API/v2/)
 - Provides recommendations for a strong(er) password
