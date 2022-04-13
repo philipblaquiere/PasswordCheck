@@ -11,9 +11,9 @@ namespace PasswordCheck.Applications
     public class CheckPasswordApplication : IApplication
     {
         public CheckPasswordApplication(
-            string password,
-            string ruleSet,
-            string rankingSet,
+            string? password,
+            string? ruleSet,
+            string? rankingSet,
             bool isDetailedOutput,
             bool isCheckHaveIBeenPwned)
         {
@@ -24,11 +24,11 @@ namespace PasswordCheck.Applications
             IsCheckHaveIBeenPwned = isCheckHaveIBeenPwned;
         }
 
-        public string Password { get; }
+        public string? Password { get; }
 
-        public string RuleSetName { get; }
+        public string? RuleSetName { get; }
 
-        public string RankingSetName { get; }
+        public string? RankingSetName { get; }
 
         public bool IsDetailedOutput { get; }
 
@@ -36,9 +36,9 @@ namespace PasswordCheck.Applications
 
         public async Task Run()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 
-            CheckPasswordService checkPasswordService = new CheckPasswordService();
+            CheckPasswordService checkPasswordService = new();
 
             CheckPasswordResult result = await checkPasswordService.Check(
                 Password,
@@ -57,14 +57,24 @@ namespace PasswordCheck.Applications
                 if (result.RulesPassed?.Any() ?? false)
                 {
                     sb.AppendLine($"PASSED:");
-                    sb.AppendJoin("\n", result.RulesPassed?.Select(rule => rule.Message));
+                    var values = result.RulesPassed?.Select(rule => rule.Message);
+
+                    if(values != null)
+                    {
+                        sb.AppendJoin("\n", values);
+                    }
                     sb.AppendLine();
                 }
 
                 if (!result.IsSuccess)
                 {
                     sb.AppendLine("FAILED:");
-                    sb.AppendJoin("\n", result.RulesFailed?.Select(rule => rule.Message));
+                    var values = result.RulesFailed?.Select(rule => rule.Message);
+
+                    if (values != null)
+                    {
+                        sb.AppendJoin("\n", values);
+                    }
                     sb.AppendLine();
                 }
 

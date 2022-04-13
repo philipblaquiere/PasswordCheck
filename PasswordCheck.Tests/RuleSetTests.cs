@@ -93,7 +93,7 @@ namespace PasswordCheck.Tests
 			RuleSetTestResult result = defaultRuleSet.Test(password);
 
 			// Assert
-			Assert.IsTrue(result.RulesRecommendations.Any());
+			Assert.IsTrue(result.RulesRecommendations?.Any() ?? false);
 		}
 
 
@@ -108,7 +108,7 @@ namespace PasswordCheck.Tests
 			RuleSetTestResult result = defaultRuleSet.Test(password);
 
 			// Assert
-			Assert.IsTrue(result.RulesFailed.Any());
+			Assert.IsTrue(result.RulesFailed?.Any() ?? false);
 		}
 
 		[TestMethod]
@@ -150,7 +150,7 @@ namespace PasswordCheck.Tests
 			RuleSetTestResult result = defaultRuleSet.Test(password);
 
 			// Assert
-			Assert.IsTrue(result.RulesRecommendations.Any());
+			Assert.IsTrue(result.RulesRecommendations?.Any() ?? false);
 		}
 
 		[TestMethod]

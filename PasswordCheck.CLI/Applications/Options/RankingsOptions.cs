@@ -9,6 +9,6 @@ namespace PasswordCheck.Applications.Options
 		public bool ListRankings { get; set; }
 
 		[Option('d', "details", Required = false, HelpText = "Displays the list of scores specified by the ranking")]
-		public string Ranking { get; set; }
+		public string? Ranking { get; set; }
 	}
 }

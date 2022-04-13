@@ -11,12 +11,12 @@ namespace HaveIBeenPND
     {
         private readonly IHaveIBeenPNDClient haveIBeenPNDClient;
 
-        public HaveIBeenPNDService(IHaveIBeenPNDClient haveIBeenPNDClient = null)
+        public HaveIBeenPNDService(IHaveIBeenPNDClient? haveIBeenPNDClient = null)
         {
             this.haveIBeenPNDClient = haveIBeenPNDClient ?? new HaveIBeenPNDClient();
         }
 
-        public async Task<PNDPassword> HaveIBeenPND(string password)
+        public async Task<PNDPassword?> HaveIBeenPND(string? password)
         {
             if (string.IsNullOrEmpty(password))
             {
@@ -25,7 +25,7 @@ namespace HaveIBeenPND
 
             var hashedPassword = HashHelper.SHA1Hash(password);
 
-            string prefix = hashedPassword.Substring(0, 5);
+            string prefix = hashedPassword[..5];
 
             var response = await this.haveIBeenPNDClient.Range(prefix);
 

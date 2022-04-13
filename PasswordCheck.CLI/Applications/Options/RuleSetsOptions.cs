@@ -6,9 +6,9 @@ namespace PasswordCheck.Applications.Options
 	public class RuleSetsOptions
 	{
 		[Option('l', "list", Required = false, HelpText = "List available rulesets")]
-		public bool ListRuleSets{ get; set; }
+		public bool ListRuleSets { get; set; }
 
 		[Option('d', "details", Required = false, HelpText = "Displays the list of rules specified in the ruleset")]
-		public string RuleSet { get; set; }
+		public string? RuleSet { get; set; }
 	}
 }

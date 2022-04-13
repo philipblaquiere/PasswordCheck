@@ -13,18 +13,18 @@ namespace PasswordCheck.Applications
 	{
 		public RuleSetsApplication(
 			bool listRuleSets,
-			string ruleSetDetails)
+			string? ruleSetDetails)
 		{
 			ListRuleSets = listRuleSets;
 			RuleSetDetails = ruleSetDetails;
 		}
 
 		public bool ListRuleSets { get; }
-		public string RuleSetDetails { get; }
+		public string? RuleSetDetails { get; }
 
 		public async Task Run()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			IRuleSetService ruleSetService = new RuleSetService();
 
 			if (ListRuleSets || string.IsNullOrEmpty(RuleSetDetails))
